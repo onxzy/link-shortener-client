@@ -23,12 +23,14 @@ function Register({toggleForm, refreshUser}) {
               await account.create('unique()', values.email, values.password)
             } catch (err) {
               setStatus(err.message)
+              return
             }
 
             try {
               await account.createEmailSession(values.email, values.password)
             } catch (err) {
               setStatus(err.message)
+              return
             }
 
             refreshUser()
@@ -48,10 +50,10 @@ function Register({toggleForm, refreshUser}) {
               error={errors.confirm_password}/>
             {errors.confirm_password && (<p className="my-2 text-center text-orange-300">{errors.confirm_password}</p>)}
             <div className="flex gap-x-2 first-line:w-full mt-2">
-              <Button className="basis-1/2" outline="true" onClick={() => toggleForm(false)}>
+              <Button className="basis-1/2" outline="true" onClick={() => toggleForm(false)} type="button">
                 Login
               </Button>
-              <Button className="basis-1/2" type="submit" disabled={isSubmitting}>
+              <Button className="basis-1/2" type="submit" disabled={isSubmitting} >
                 {isSubmitting ? <LoadingSpin/> : "Register"}
               </Button>
             </div>

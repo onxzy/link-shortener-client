@@ -33,7 +33,7 @@ function Login({toggleForm, refreshUser}) {
             <Input name="email" placeholder="Email" className="w-full" type="email" required onChange={handleChange} onBlur={handleBlur} value={values.email}/>
             <Input name="password" placeholder="Password" className="mt-2 w-full" type="password" required onChange={handleChange} onBlur={handleBlur} value={values.password}/>
             <div className="flex gap-x-2 first-line:w-full mt-2">
-              <Button className="basis-1/2" outline="true" onClick={() => toggleForm(true)}>
+              <Button className="basis-1/2" outline="true" onClick={() => toggleForm(true)} type="button">
                 Register
               </Button>
               <Button className="basis-1/2" type="submit" disabled={isSubmitting}>
