@@ -30,18 +30,25 @@ function LinkForm({user, triggerRefreshLinks}) {
           const errors = {};
 
           if (values.short.substring(0, SHORT_PLACEHOLDER.length) !== SHORT_PLACEHOLDER) {
-            errors.short = `Short link should begin by ${SHORT_PLACEHOLDER}`
+            errors.short = `Short link must start with ${SHORT_PLACEHOLDER}`
             return errors;
           }
 
-          if (values.short.substring(SHORT_PLACEHOLDER.length).length <= 3) {
-            errors.short = `The length of the short link should be greater than 3 characters`
+          const short = values.short.substring(SHORT_PLACEHOLDER.length)
+
+          if (short.length <= 3) {
+            errors.short = `Short link must be at least 4 characters long.`
+            return errors;
+          }
+
+          if (!(/^[A-Za-z0-9öø-ÿ]+([_-][A-Za-z0-9À-ÖØ-öø-ÿ]+)*$/.test(short))) {
+            errors.short = `Short link invalid : Please enter letters, numbers, and _ or -, but not multiple underscores or dashes in a row.`
             return errors;
           }
 
           try {
             const list = await databases.listDocuments(config.db, config.collection, [
-              Query.equal('short', values.short.substring(SHORT_PLACEHOLDER.length))
+              Query.equal('short', short)
             ])
             if (list.total > 0) errors.short = `Short link unavailable`
             return errors;
@@ -49,7 +56,7 @@ function LinkForm({user, triggerRefreshLinks}) {
             return errors;
           }
         }}
-        validateOnChange={false}
+        // validateOnChange={false}
         onSubmit={
           async (values, {setSubmitting, setStatus, resetForm}) => {
             setSubmitting(true)
@@ -82,7 +89,7 @@ function LinkForm({user, triggerRefreshLinks}) {
               className="w-full" type="url" required
               onChange={handleChange} onBlur={handleBlur} value={values.link}/>
             <div className="flex w-full  mt-2">
-              <div class="relative basis-10/12">
+              <div className="relative basis-10/12">
                 <Input name="short" placeholder={SHORT_PLACEHOLDER}
                   className="w-full" type="url" required
                   onChange={(e) => {

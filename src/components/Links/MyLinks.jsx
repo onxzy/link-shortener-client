@@ -18,8 +18,8 @@ function MyLinks({user, links, triggerRefreshLinks}) {
         links.length === 0
           ? <p className="my-3 text-center text-dark-300">Aucun lien</p>
           : links.map((link) => (
-            <div>
-              <SingleLink key={link.$id} id={link.$id} short={link.short} dest={link.dest} triggerRefreshLinks={triggerRefreshLinks} />
+            <div key={link.$id}>
+              <SingleLink id={link.$id} short={link.short} dest={link.dest} triggerRefreshLinks={triggerRefreshLinks} />
               <hr className="my-3 border-dark-300" />
             </div>
           ))

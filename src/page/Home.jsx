@@ -19,7 +19,7 @@ function Home({user, refreshUser}) {
         <div className="w-full">
           <Title/>
         </div>
-        <div className="basis-1/2 w-full p-4">
+        <div className="basis-1/2 w-full px-10">
           {showRegisterForm
             ? <Register toggleForm={toggleForm} refreshUser={refreshUser}/>
             : <Login toggleForm={toggleForm} refreshUser={refreshUser}/>
