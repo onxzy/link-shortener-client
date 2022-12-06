@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { account } from "./appwrite/appwrite";
+import { supabase } from "./supabase/supabase";
 import Home from "./page/Home";
 import Links from "./page/Links";
 
@@ -11,12 +11,14 @@ function App() {
   const triggerRefreshUser = () => setTriggerRefreshUser(watchTriggerRefreshUser + 1);
 
   useEffect(() => {
-    account.get()
-      .then((res) => {
-        console.log(res);
-        setUser(res);
+    supabase.auth.getUser()
+      .then(({data, error}) => {
+        if(error) {
+          setUser(null)
+        } else {
+          setUser(data.user)
+        }
       })
-      .catch((err) => setUser(null));
   }, [watchTriggerRefreshUser])
   
 

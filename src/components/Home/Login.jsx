@@ -1,6 +1,6 @@
 import { Formik } from 'formik'
 import React from 'react'
-import { account } from '../../appwrite/appwrite'
+import { supabase } from '../../supabase/supabase'
 import Button from '../Global/Button'
 import Input from '../Global/Input'
 import LoadingSpin from '../Global/LoadingSpin'
@@ -12,19 +12,18 @@ function Login({toggleForm, refreshUser}) {
       <Formik
         initialValues={{email: '', password: ''}}
         onSubmit={
-          (values, {setSubmitting, setStatus}) => {
+          async (values, {setSubmitting, setStatus}) => {
             setSubmitting(true)
-            account.createEmailSession(values.email, values.password)
-              .then((res) => {
-                console.log(res)
-                refreshUser();
-              })
-              .catch((err) => {
-                setStatus(err.message)
-              })
-              .finally(() => {
-                setSubmitting(false);
-              })
+            const { error } = await supabase.auth.signInWithPassword({
+              email: values.email,
+              password: values.password,
+            })
+
+            if (error) {
+              setStatus(error.message)
+            } else {
+              refreshUser()
+            }
           }
         }
       >

@@ -1,6 +1,5 @@
-import { Query } from 'appwrite';
 import React, { useEffect, useRef, useState } from 'react'
-import { config, databases } from '../appwrite/appwrite';
+import { supabase } from '../supabase/supabase';
 import LinkForm from "../components/Links/LinkForm";
 import Logout from "../components/Global/Logout";
 import Title from '../components/Global/Title'
@@ -16,21 +15,36 @@ function Links({refreshUser, user}) {
   const triggerRefreshLinks = () => setTriggerRefreshLinks(watchTriggerRefreshLinks + 1);
 
   useEffect(() => {
-    databases.listDocuments(
-      config.db, config.collection,
-      [
-        Query.equal('userId', user.$id),
-        Query.orderDesc('$createdAt')
-      ]
-    )
-    .then((res) => {
-      console.log(res);
-      setLinks(res.documents);
-    })
-    .catch((err) => {
-      console.log(err);
-      setLinks([]);
-    })
+    console.log(user)
+
+    supabase
+      .from('links')
+      .select()
+      .eq('user_id', user.id)
+      .then(({data, error}) => {
+        if (error) {
+          console.log(error)
+          setLinks([]);
+        } else {
+          setLinks(data);
+        }
+      })
+
+    // databases.listDocuments(
+    //   config.db, config.collection,
+    //   [
+    //     Query.equal('userId', user.$id),
+    //     Query.orderDesc('$createdAt')
+    //   ]
+    // )
+    // .then((res) => {
+    //   console.log(res);
+    //   setLinks(res.documents);
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    //   setLinks([]);
+    // })
   }, [user, watchTriggerRefreshLinks])
 
   const myLinksRef = useRef(null);

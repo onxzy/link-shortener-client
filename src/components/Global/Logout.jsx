@@ -1,5 +1,5 @@
 import React from 'react'
-import { account } from '../../appwrite/appwrite';
+import { supabase } from '../../supabase/supabase';
 
 function Logout({refreshUser}) {
   return (
@@ -8,8 +8,7 @@ function Logout({refreshUser}) {
       onClick={
         (e) => {
           e.preventDefault();
-          account.deleteSessions()
-            .then(() => refreshUser())
+          supabase.auth.signOut().then(() => refreshUser())
         }
       }>Logout</button>
     </div>
