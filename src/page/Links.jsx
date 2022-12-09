@@ -64,7 +64,7 @@ function Links({refreshUser, user}) {
         </div>
 
         <div className="absolute inset-x-0 bottom-0 px-10 mb-4 text-center">
-          <button className="text-dark-300 hover:text-dark-100 outline-none"
+          <button className="text-dark-300 hover:text-dark-100 outline-none animate-bounce"
             onClick={(e) => {
               e.preventDefault()
               myLinksRef.current.scrollIntoView({behavior: "smooth"});
