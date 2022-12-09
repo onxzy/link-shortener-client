@@ -3,8 +3,7 @@ import LoadingSpin from '../Global/LoadingSpin'
 import Button from '../Global/Button'
 import Input from '../Global/Input'
 import { Formik } from 'formik'
-import { config, databases } from '../../appwrite/appwrite'
-import { Permission, Query, Role } from 'appwrite'
+import { supabase } from '../../supabase/supabase'
 
 function LinkForm({user, triggerRefreshLinks}) {
 
@@ -46,40 +45,30 @@ function LinkForm({user, triggerRefreshLinks}) {
             return errors;
           }
 
-          try {
-            const list = await databases.listDocuments(config.db, config.collection, [
-              Query.equal('short', short)
-            ])
-            if (list.total > 0) errors.short = `Short link unavailable`
-            return errors;
-          } catch (error) {
-            return errors;
-          }
+          const {data} = await supabase
+            .from('links')
+            .select()
+            .eq('short', short)
+          if (data.length > 0) errors.short = `Short link unavailable`
+          
+          return errors
         }}
         // validateOnChange={false}
         onSubmit={
           async (values, {setSubmitting, setStatus, resetForm}) => {
             setSubmitting(true)
 
-            try {
-              await databases.createDocument(
-                config.db, config.collection,
-                'unique()',
-                {dest: values.link, userId: user.$id, short: values.short.substring(SHORT_PLACEHOLDER.length)},
-                [
-                  Permission.delete(Role.user(user.$id))
-                ])
-            } catch (err) {
-              console.error(err);
-              setStatus(err.message);
+            const { error } = await supabase
+              .from('links')
+              .insert({dest: values.link, user_id: user.id, short: values.short.substring(SHORT_PLACEHOLDER.length)})
+            if (error) {
+              setStatus(error.message);
+            } else {
+              resetForm()
+              triggerRefreshLinks()
+              navigator.clipboard.writeText(values.short)
+              toggleSuccess()
             }
-
-            resetForm()
-            triggerRefreshLinks()
-            navigator.clipboard.writeText(values.short)
-            toggleSuccess()
-            setSubmitting(false)
-
           }
         }
       >

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LoadingSpin from '../../Global/LoadingSpin';
-import { config, databases } from '../../../appwrite/appwrite';
+import { supabase } from '../../../supabase/supabase';
 
 function SingleLink({id, short, dest, triggerRefreshLinks}) {
 
@@ -12,14 +12,12 @@ function SingleLink({id, short, dest, triggerRefreshLinks}) {
   function handleDelete() {
     setLoading(true)
 
-    databases.deleteDocument(config.db, config.collection, id)
-      .then((res) => {
+    supabase.from('links').delete().eq('id', id)
+      .then(({error}) => {
+        if (error) {
+          console.log(error)
+        }
         triggerRefreshLinks()
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-      .finally(() => {
         setLoading(false)
       })
   }

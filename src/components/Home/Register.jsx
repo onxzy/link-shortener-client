@@ -3,7 +3,7 @@ import Button from '../Global/Button'
 import LoadingSpin from '../Global/LoadingSpin'
 import Input from '../Global/Input'
 import { Formik } from 'formik'
-import { account } from '../../appwrite/appwrite'
+import { supabase } from '../../supabase/supabase'
 
 function Register({toggleForm, refreshUser}) {
   return (
@@ -19,21 +19,16 @@ function Register({toggleForm, refreshUser}) {
           async (values, {setSubmitting, setStatus}) => {
             setSubmitting(true)
 
-            try {
-              await account.create('unique()', values.email, values.password)
-            } catch (err) {
-              setStatus(err.message)
-              return
-            }
+            let { error } = await supabase.auth.signUp({
+              email: values.email,
+              password: values.password
+            })
 
-            try {
-              await account.createEmailSession(values.email, values.password)
-            } catch (err) {
-              setStatus(err.message)
-              return
-            }
-
-            refreshUser()
+            if (error) {
+              setStatus(error.message)
+            } else {
+              refreshUser()
+            }            
           }
         }
       >
