@@ -7,7 +7,7 @@ import { supabase } from '../../supabase/supabase'
 
 function Register({toggleForm, refreshUser}) {
   return (
-    <div className="w-full max-w-md mx-auto mt-20">
+    <div className="w-full max-w-md mx-auto">
       <Formik
         initialValues={{email: '', password: '', confirm_password: ''}}
         validate={values => {
@@ -52,6 +52,7 @@ function Register({toggleForm, refreshUser}) {
                 {isSubmitting ? <LoadingSpin/> : "Register"}
               </Button>
             </div>
+
             {status && (<p className="mt-6 text-center text-dark-300">{status}</p>)}
           </form>
         )}

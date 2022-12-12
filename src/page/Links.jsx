@@ -29,22 +29,6 @@ function Links({refreshUser, user}) {
           setLinks(data);
         }
       })
-
-    // databases.listDocuments(
-    //   config.db, config.collection,
-    //   [
-    //     Query.equal('userId', user.$id),
-    //     Query.orderDesc('$createdAt')
-    //   ]
-    // )
-    // .then((res) => {
-    //   console.log(res);
-    //   setLinks(res.documents);
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    //   setLinks([]);
-    // })
   }, [user, watchTriggerRefreshLinks])
 
   const myLinksRef = useRef(null);
